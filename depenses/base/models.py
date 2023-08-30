@@ -1,6 +1,9 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
+
+from depenses import settings
 
 
 
@@ -20,7 +23,6 @@ class xCategory(models.Model):
 
 
 
-
 class nCategory(models.Model):
     class Meta:
         verbose_name = _("income category")
@@ -34,7 +36,6 @@ class nCategory(models.Model):
 
     def __str__(self):
         return self.name
-
 
 
 
@@ -55,18 +56,18 @@ class Account(models.Model):
 
 
 
-
 class Expense():
     class Meta:
         verbose_name = _("expense")
         verbose_name_plural = _("expenses")
-    date = models.DateField(_("Date"), default=datetime.date.today)
+    date = models.DateField(_("Date"), default=timezone.now())
     vendor = models.CharField(_("Vendor"), max_length=40)
     category = models.ForeignKey(xCategory, verbose_name=_("Category"), on_delete=models.PROTECT)
     account = models.ForeignKey(Account, verbose_name=_("Account"), on_delete=models.PROTECT)
     amount = models.DecimalField(_("Amount"), max_digits=10, decimal_places=2)
     description = models.CharField(_("Description"), max_length=80, blank=True)
-
+    date_added = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
 
 
 
@@ -74,13 +75,14 @@ class Income():
     class Meta:
         verbose_name = _("income")
         verbose_name_plural = _("incomes")
-    date = models.DateField(_("Date"), default=datetime.date.today)
-    source = models.CharField(_("Source"), max_length=40)
+    date = models.DateField(_("Date"), default=timezone.now())
+    # source = models.CharField(_("Source"), max_length=40)
     category = models.ForeignKey(nCategory, verbose_name=_("Category"), on_delete=models.PROTECT)
     account = models.ForeignKey(Account, verbose_name=_("Account"), on_delete=models.PROTECT)
     amount = models.DecimalField(_("Amount"), max_digits=10, decimal_places=2)
     description = models.CharField(_("Description"), max_length=80, blank=True)
-
+    date_added = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
 
 
 
@@ -88,9 +90,12 @@ class Transfer():
     class Meta:
         verbose_name = _("transfer")
         verbose_name_plural = _("transfers")
-    date = models.DateField(_("Date"), default=datetime.date.today)
-    source = models.CharField(_("Source"), max_length=40)
+    date = models.DateField(_("Date"), default=timezone.now())
+    # source = models.CharField(_("Source"), max_length=40)
     fm = models.ForeignKey(Account, verbose_name=_("From"), on_delete=models.PROTECT)
     to = models.ForeignKey(Account, verbose_name=_("To"), on_delete=models.PROTECT)
     amount = models.DecimalField(_("Amount"), max_digits=10, decimal_places=2)
     description = models.CharField(_("Description"), max_length=80, blank=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    
