@@ -1,6 +1,10 @@
 from django.shortcuts import render
 
-# Create your views here.
+
 def home(request):
-    context = {'message':'This message was passed from the View...'}
-    return render(request, 'base/home.html', context)
+    if request.user.is_authenticated:
+        context = {'message':'You are known, we know you, ...'}
+        return render(request, 'base/home.html', context)        
+    else:
+        context = {'message':'Who the hell are you in this world ? ...'}
+        return render(request, 'base/home.html', context)
