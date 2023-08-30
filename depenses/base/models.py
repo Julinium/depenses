@@ -2,21 +2,95 @@ from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
 
-class Access(models.Model):
-    
-    active = models.BooleanField(default = True)
-    date = models.DateTimeField(default = timezone.now)
-    title = models.CharField(max_length = 256)
-    reason = models.CharField(max_length = 256)
-    location = models.CharField(max_length = 256)
-    details = models.TextField(blank = True)
-    archived = models.BooleanField(default = False)
-    created_on = models.DateTimeField(auto_now_add = True)
-    updated_on = models.DateTimeField(auto_now = True)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-	
-    def __str__(self):
-        return str(self.title) + " - " + self.date.strftime("%a %d %b %Y, %H:%M")
 
-    class Meta():
-        ordering = ['-date', '-updated_on']
+
+class xCategory(models.Model):
+    class Meta:
+        verbose_name = _("expense category")
+        verbose_name_plural = _("expense categories")
+
+    name = models.CharField(_("Name"), max_length=20)
+    order = models.IntegerField(_("Order"), default=1)
+    date_added = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    # icon = 
+
+    def __str__(self):
+        return self.name
+
+
+
+
+class nCategory(models.Model):
+    class Meta:
+        verbose_name = _("income category")
+        verbose_name_plural = _("income categories")
+
+    name = models.CharField(_("Name"), max_length=20)
+    order = models.IntegerField(_("Order"), default=1)
+    date_added = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+    # icon = 
+
+    def __str__(self):
+        return self.name
+
+
+
+
+class Account(models.Model):
+    class Meta:
+        verbose_name = _("account")
+        verbose_name_plural = _("accounts")
+
+    name = models.CharField(_("Name"), max_length=20)
+    reference = models.CharField(_("Reference"), max_length=64)
+    order = models.IntegerField(_("Order"), default=1)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE)
+    date_added = models.DateTimeField(auto_now_add=True)
+    date_modified = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
+
+
+class Expense():
+    class Meta:
+        verbose_name = _("expense")
+        verbose_name_plural = _("expenses")
+    date = models.DateField(_("Date"), default=datetime.date.today)
+    vendor = models.CharField(_("Vendor"), max_length=40)
+    category = models.ForeignKey(xCategory, verbose_name=_("Category"), on_delete=models.PROTECT)
+    account = models.ForeignKey(Account, verbose_name=_("Account"), on_delete=models.PROTECT)
+    amount = models.DecimalField(_("Amount"), max_digits=10, decimal_places=2)
+    description = models.CharField(_("Description"), max_length=80, blank=True)
+
+
+
+
+class Income():
+    class Meta:
+        verbose_name = _("income")
+        verbose_name_plural = _("incomes")
+    date = models.DateField(_("Date"), default=datetime.date.today)
+    source = models.CharField(_("Source"), max_length=40)
+    category = models.ForeignKey(nCategory, verbose_name=_("Category"), on_delete=models.PROTECT)
+    account = models.ForeignKey(Account, verbose_name=_("Account"), on_delete=models.PROTECT)
+    amount = models.DecimalField(_("Amount"), max_digits=10, decimal_places=2)
+    description = models.CharField(_("Description"), max_length=80, blank=True)
+
+
+
+
+class Transfer():
+    class Meta:
+        verbose_name = _("transfer")
+        verbose_name_plural = _("transfers")
+    date = models.DateField(_("Date"), default=datetime.date.today)
+    source = models.CharField(_("Source"), max_length=40)
+    fm = models.ForeignKey(Account, verbose_name=_("From"), on_delete=models.PROTECT)
+    to = models.ForeignKey(Account, verbose_name=_("To"), on_delete=models.PROTECT)
+    amount = models.DecimalField(_("Amount"), max_digits=10, decimal_places=2)
+    description = models.CharField(_("Description"), max_length=80, blank=True)
