@@ -2,9 +2,14 @@
 
 {% block title %} Depenses {% endblock %}
 
-{% block content %} 
-
-<h1>Home sweet home</h1>
-{{ message }}
-
+{% block content %}
+<ul>
+    {% for expense in expenses %}
+    <li>
+        {{ expense.category }} : {{ expense.amount }} @ {{ expense.date }}
+    </li>
+    {% empty %}
+    <li>No expense was found !</li>
+    {% endfor %}
+</ul>
 {% endblock %}

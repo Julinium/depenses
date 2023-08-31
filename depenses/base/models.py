@@ -40,7 +40,7 @@ class nCategory(models.Model):
 
 
 class Account(models.Model):
-    class Meta:
+    class Meta():
         verbose_name = _("account")
         verbose_name_plural = _("accounts")
 
@@ -56,11 +56,13 @@ class Account(models.Model):
 
 
 
-class Expense():
+class Expense(models.Model):
     class Meta:
         verbose_name = _("expense")
         verbose_name_plural = _("expenses")
-    date = models.DateField(_("Date"), default=timezone.now())
+        ordering = ['-date', '-amount', '-date_modified']
+        
+    date = models.DateField(_("Date"), default=timezone.now)
     vendor = models.CharField(_("Vendor"), max_length=40)
     category = models.ForeignKey(xCategory, verbose_name=_("Category"), on_delete=models.PROTECT)
     account = models.ForeignKey(Account, verbose_name=_("Account"), on_delete=models.PROTECT)
@@ -68,14 +70,19 @@ class Expense():
     description = models.CharField(_("Description"), max_length=80, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return str(self.category.name) + ': ' + str(self.amount)
 
 
 
-class Income():
+class Income(models.Model):
     class Meta:
         verbose_name = _("income")
         verbose_name_plural = _("incomes")
-    date = models.DateField(_("Date"), default=timezone.now())
+        ordering = ['-date', '-amount', '-date_modified']
+        
+    date = models.DateField(_("Date"), default=timezone.now)
     # source = models.CharField(_("Source"), max_length=40)
     category = models.ForeignKey(nCategory, verbose_name=_("Category"), on_delete=models.PROTECT)
     account = models.ForeignKey(Account, verbose_name=_("Account"), on_delete=models.PROTECT)
@@ -86,14 +93,16 @@ class Income():
 
 
 
-class Transfer():
+class Transfer(models.Model):
     class Meta:
         verbose_name = _("transfer")
         verbose_name_plural = _("transfers")
-    date = models.DateField(_("Date"), default=timezone.now())
+        ordering = ['-date', '-amount', '-date_modified']
+        
+    date = models.DateField(_("Date"), default=timezone.now)
     # source = models.CharField(_("Source"), max_length=40)
-    fm = models.ForeignKey(Account, verbose_name=_("From"), on_delete=models.PROTECT)
-    to = models.ForeignKey(Account, verbose_name=_("To"), on_delete=models.PROTECT)
+    fm = models.ForeignKey(Account, verbose_name=_("From"), related_name = _("Source"), on_delete=models.PROTECT)
+    to = models.ForeignKey(Account, verbose_name=_("To"), related_name = _("Destin"), on_delete=models.PROTECT)
     amount = models.DecimalField(_("Amount"), max_digits=10, decimal_places=2)
     description = models.CharField(_("Description"), max_length=80, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
