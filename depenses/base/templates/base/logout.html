@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+
+{% block title %}Assistant: Logout{% endblock %}
+
+{% block content %} 
+
+<h1>Logout</h1>
+<p>Are you sure you want to logout?</p>
+<form method="post">
+    {% csrf_token %}
+    <input type="submit" value="Logout">
+</form>
+
+{% endblock %}

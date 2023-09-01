@@ -1,2 +1,13 @@
-<a href="">Home</a>
-<a href="/admin/">Admin</a>
+<nav>
+    <a href="/">Home</a> -
+
+    {% if request.user.is_authenticated %}
+        <!-- <a href="{% url 'accesses_list' %}">Access Log</a> -
+        <a href="/">Profile</a> - -->
+        <a href="{% url 'logout' %}">Logout</a>
+
+    {% else %}
+        <a href="{% url 'login' %}">Login</a>
+    {% endif %}
+
+</nav>
