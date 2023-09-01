@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from . models import Account, nCategory, xCategory, Expense, Income, Transfer
+from base.models import Account, nCategory, xCategory, Expense, Income, Transfer
 
 admin.site.register(Account)
 admin.site.register(nCategory)
