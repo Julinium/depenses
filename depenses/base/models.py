@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from django.db.models.signals import pre_save, post_save, post_delete
+from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
 from depenses import settings
@@ -47,12 +49,14 @@ class Account(models.Model):
     name = models.CharField(_("Name"), max_length=20)
     reference = models.CharField(_("Reference"), max_length=64)
     order = models.IntegerField(_("Order"), default=1)
+    balance = models.DecimalField(_("Balance"), max_digits=10, decimal_places=2, default=0)
+    balance_date = models.DateTimeField(_("Balance Date"), default=timezone.now)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name + ": " + str(self.user)
+        return self.name + " = " + str(self.balance) + " (" + str(self.user) + ")"
 
 
 
@@ -107,4 +111,32 @@ class Transfer(models.Model):
     description = models.CharField(_("Description"), max_length=80, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
+    
+
+@receiver(post_save, sender=Expense)
+def xp_add(sender, created, instance, **kwargs):
+    xp = instance
+    ac = instance.account
+    if created:
+        ac.balance -= instance.amount
+    else:
+        # TODO: Send a signal before editing an Expense, 
+        # so We can know what was the amount before editing.
+        #############################
+        ##### vvvvv WRONG vvvvv #####
+        #############################
+        ac.balance -= instance.amount
+    ac.balance_date = timezone.now()
+    ac.save()
+    return ac
+    
+@receiver(post_delete, sender=Expense)
+def xp_del(sender, instance, **kwargs):
+    xp = instance
+    ac = xp.account
+    ac.balance += xp.amount
+    ac.balance_date = timezone.now()
+    ac.save()
+    return ac
+    
     

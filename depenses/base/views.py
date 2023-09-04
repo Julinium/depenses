@@ -30,11 +30,11 @@ def register_view(request):
             user = form.save()
             login(request, user)
             messages.success(request, _("Registration successful."))
-            return redirect("home")
+            return redirect("login")
         messages.error(request, _("Unsuccessful registration. Invalid information."))
     else:
         form = NewUserForm()
-    context={"register_form":form}
+    context={"register_form": form}
     return render (request, "base/register.html", context)
 
 
