@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.utils.translation import gettext_lazy as _
-from base.models import Expense
+from base.models import Expense, Income, Transfer, Account
 from django.contrib.auth.decorators import login_required
 # from django.shortcuts import  render, redirect
 from .forms import NewUserForm
@@ -56,16 +56,29 @@ def legal(request):
 
 @login_required(login_url="login")
 def home(request):
-    
+    incomes = Income.objects.all().filter(account__user=request.user)
     expenses = Expense.objects.all().filter(account__user=request.user)
-    message = _("You are known, we know you, ...")
-    context = {'message': message,
-               'expenses': expenses}
+    transfers = Transfer.objects.all().filter(fm__user=request.user).filter(to__user=request.user)
+    xtotal = 0
+    for e in expenses: xtotal += e.amount
+    ntotal = 0
+    for i in incomes: ntotal += i.amount
+    perfo = ntotal - xtotal
+    context = {'incomes': incomes,
+               'transfers': transfers,
+               'expenses': expenses,
+               'ntotal': ntotal,
+               'xtotal': xtotal,
+               'perfo': perfo}
     return render(request, 'base/home.html', context)
-    # if request.user.is_authenticated:
-    # else:
-    #     context = {'message':_("Welcome. This is a great app. Login to use it.")}
-    #     return render(request, 'base/welcome.html', context)
+
+
+@login_required(login_url="login")
+def accounts_list(request):
+    accounts = Account.objects.all().filter(user=request.user)
+    context = {'accounts': accounts}
+    return render(request, 'base/accounts.html', context)
+    
     
     
 def wip(request):

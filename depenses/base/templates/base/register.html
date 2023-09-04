@@ -11,7 +11,7 @@
         {% for field in register_form %}
         <p>{{ field.label }} {{ field }}</p>
         {% endfor %}
-        <button class="btn btn-primary" type="submit">Register</button>
+        <button type="submit">Register</button>
     </form>
     {% if messages %}
     <ul class="messages">
@@ -20,7 +20,7 @@
             {% endfor %}
     </ul>
     {% endif %}
-    <p class="text-center">Already have an account? <a href="{% url 'login' %}">login</a> instead.</p>
+    <p>Already have an account? <a href="{% url 'login' %}">login</a> instead.</p>
 </div>
 
 {% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'main.html' %}
+
+{% block title %} Accounts {% endblock %}
+
+{% block content %}
+<div>
+    <h1>Accounts list</h1>
+</div>
+<div>
+    <ul>
+        {% for account in accounts %}
+        <li>
+            {{ account.name }} : {{ account.reference }}
+        </li>
+        {% empty %}
+        <li> -- </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

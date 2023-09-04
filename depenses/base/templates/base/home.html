@@ -3,13 +3,43 @@
 {% block title %} Depenses {% endblock %}
 
 {% block content %}
-<ul>
-    {% for expense in expenses %}
-    <li>
-        {{ expense.category }} : {{ expense.amount }} @ {{ expense.date }}
-    </li>
-    {% empty %}
-    <li>No expense was found !</li>
-    {% endfor %}
-</ul>
+<div>
+    <h1>Balance: {{ perfo }}</h1>
+</div>
+<div>
+    <h3>Lastest Incomes</h3>
+    <ul>
+        {% for income in incomes %}
+        <li>
+            {{ income.category }} : {{ income.amount }} @ {{ income.date }}
+        </li>
+        {% empty %}
+        <li> -- </li>
+        {% endfor %}
+    </ul>
+</div>
+<div>
+    <h3>Lastest Expenses</h3>
+    <ul>
+        {% for expense in expenses %}
+        <li>
+            {{ expense.category }} : {{ expense.amount }} @ {{ expense.date }}
+        </li>
+        {% empty %}
+        <li> -- </li>
+        {% endfor %}
+    </ul>
+</div>
+<div>
+    <h3>Lastest Transfers</h3>
+    <ul>
+        {% for transfer in transfers %}
+        <li>
+            {{ transfer.fm }}: {{ transfer.amount }} > {{ transfer.to }} @ {{ transfer.date }}
+        </li>
+        {% empty %}
+        <li> -- </li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}
