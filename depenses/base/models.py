@@ -112,31 +112,35 @@ class Transfer(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)
     
+############## BETTER THAN SIGNALS ######################################
+# When saving an expense, edit the related account accordingly, in place.
+# For safety, remove Expenses managements from the Admin site.
+#########################################################################
 
-@receiver(post_save, sender=Expense)
-def xp_add(sender, created, instance, **kwargs):
-    xp = instance
-    ac = instance.account
-    if created:
-        ac.balance -= instance.amount
-    else:
-        # TODO: Send a signal before editing an Expense, 
-        # so We can know what was the amount before editing.
-        #############################
-        ##### vvvvv WRONG vvvvv #####
-        #############################
-        ac.balance -= instance.amount
-    ac.balance_date = timezone.now()
-    ac.save()
-    return ac
+# @receiver(post_save, sender=Expense)
+# def xp_add(sender, created, instance, **kwargs):
+#     xp = instance
+#     ac = instance.account
+#     if created:
+#         ac.balance -= instance.amount
+#     else:
+#         # TODO: Send a signal before editing an Expense, 
+#         # so We can know what was the amount before editing.
+#         #############################
+#         ##### vvvvv WRONG vvvvv #####
+#         #############################
+#         ac.balance -= instance.amount
+#     ac.balance_date = timezone.now()
+#     ac.save()
+#     return ac
     
-@receiver(post_delete, sender=Expense)
-def xp_del(sender, instance, **kwargs):
-    xp = instance
-    ac = xp.account
-    ac.balance += xp.amount
-    ac.balance_date = timezone.now()
-    ac.save()
-    return ac
+# @receiver(post_delete, sender=Expense)
+# def xp_del(sender, instance, **kwargs):
+#     xp = instance
+#     ac = xp.account
+#     ac.balance += xp.amount
+#     ac.balance_date = timezone.now()
+#     ac.save()
+#     return ac
     
     
