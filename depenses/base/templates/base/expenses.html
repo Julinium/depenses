@@ -1,0 +1,21 @@
+{% extends 'main.html' %}
+
+{% block title %} Expenses {% endblock %}
+
+{% block content %}
+<div>
+    <h1>Expenses list ({{ expenses.count }})</h1>
+</div>
+<div>
+    <ul>
+        {% for expense in expenses %}
+        <li>
+            {{ expense.amount }} : {{ expense.vendor }} @ {{ expense.date }} 
+            <h2><a href="{% url 'expense' expense.id %}">Details</a></h2>
+        </li>
+        {% empty %}
+        <li> -- </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

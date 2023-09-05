@@ -78,9 +78,33 @@ def accounts_list(request):
     accounts = Account.objects.all().filter(user=request.user)
     context = {'accounts': accounts}
     return render(request, 'base/accounts.html', context)
+
+
+@login_required(login_url="login")
+def expenses(request):
+    expenses = Expense.objects.all().filter(account__user=request.user)
+    context = {"expenses":expenses}
+    return render(request, 'base/expenses.html', context)
+
+
+@login_required(login_url="login")
+def expense(request, pk):
+    expense = Expense.objects.get(id=pk)
+    print(expense.account.user)
+    print(request.user)
+    if expense.account.user == request.user:
+        context = {"expense":expense, "pk": pk}
+        return render(request, 'base/expense.html', context)
     
-    
-    
+    context = {
+        'title': _("Non authorized"),
+        'message': _("You are not authorized to acces the requested ressource.")}
+    return render(request, 'base/wip.html', context)
+
 def wip(request):
-    context = {'message':_("The requested ressource is being made at this time.")}
+    title = _("It's not you...")
+    message = _("The requested ressource is not (yet) available.")
+    context = {
+        'title': title,
+        'message': message}
     return render(request, 'base/wip.html', context)

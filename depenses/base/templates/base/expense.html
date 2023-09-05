@@ -1,0 +1,16 @@
+{% extends 'main.html' %}
+
+{% block title %} Expense details {% endblock %}
+
+{% block content %}
+<div>
+    <h1>Expense details (id: {{ expense.id }})</h1>
+</div>
+<div>
+    <p>Date: {{ expense.date }}.</p>
+    <p>Amount: {{ expense.amount }}.</p>
+    <p>Vendor: {{ expense.vendor }}.</p>
+    <p>Account: {{ expense.account }}</p>
+    <p>Description: {{ expense.description }}</p>
+</div>
+{% endblock %}

@@ -13,7 +13,8 @@ urlpatterns = [
     path('wip/', views.wip, name='wip'),
     path('report/', views.wip, name='report'),
     path('incomes/', views.wip, name='incomes'),
-    path('expenses/', views.wip, name='expenses'),
+    path('expenses/', views.expenses, name='expenses'),
+    path('expense/<str:pk>', views.expense, name='expense'),
     path('accounts/', views.accounts_list, name='accounts'),
     path('categories/', views.wip, name='categories'),
 ]
