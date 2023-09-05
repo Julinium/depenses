@@ -25,10 +25,3 @@ class AccountForm(ModelForm):
 	class Meta:
 		model = Account
 		exclude = ["user"]
-
-	# def save(self, commit=True):
-	# 	account = super(AccountForm, self).save(commit=False)
-	# 	# account.user = request.user# self.cleaned_data['user']
-	# 	if commit:
-	# 		account.save()
-	# 	return account

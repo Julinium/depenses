@@ -54,6 +54,16 @@ def legal(request):
     return render(request, 'base/legal.html', context)
 
 
+def wip(request):
+    title = _("It's not you...")
+    message = _("The requested ressource is not (yet) available.")
+    context = {
+        'title': title,
+        'message': message}
+    return render(request, 'base/wip.html', context)
+
+
+
 @login_required(login_url="login")
 def home(request):
     incomes = Income.objects.all().filter(account__user=request.user)
@@ -74,7 +84,7 @@ def home(request):
 
 
 @login_required(login_url="login")
-def accounts_list(request):
+def accounts(request):
     accounts = Account.objects.all().filter(user=request.user)
     context = {'accounts': accounts}
     return render(request, 'base/accounts.html', context)
@@ -89,13 +99,10 @@ def expenses(request):
 
 @login_required(login_url="login")
 def expense(request, pk):
-    expense = Expense.objects.get(id=pk)
-    print(expense.account.user)
-    print(request.user)
+    expense = Expense.objects.get(id=pk)    # print(expense.account.user)    # print(request.user)
     if expense.account.user == request.user:
         context = {"expense":expense, "pk": pk}
         return render(request, 'base/expense.html', context)
-    
     context = {
         'title': _("Non authorized"),
         'message': _("You are not authorized to acces the requested ressource.")}
@@ -103,32 +110,27 @@ def expense(request, pk):
 
 
 @login_required(login_url="login")
-def account_form(request):
+def account_add(request):
     if request.method == "POST":
         form = AccountForm(request.POST)
         if form.is_valid():
             account = form.save(commit=False)
             account.user = request.user
-            if account.save():
-                messages.success(request, _("Account created successfully."))
-                accoubal = AccountBalance.objects.create(balance=account.balance)
-                # accoubal.balance = account.balance
-                accoubal.save()
-                print(accoubal)
-            else:
-                messages.error(request, _("Account saving error. Invalid information."))
+            # if commit:
+            account.save()
+            accoubal = AccountBalance.objects.create(account=account)
+            messages.success(request, _("Account created successfully."))
+            # accoubal.balance = account.balance
+            # accoubal.save()
+            # print(accoubal)
+            # else:
+            #     messages.error(request, _("Account saving error. Invalid information."))
         return redirect("accounts")
         messages.error(request, _("Account creation error. Invalid information."))
     else:
         form = AccountForm()
     context={"form": form}
-    return render (request, "base/account_form.html", context)
+    return render (request, "base/account_add.html", context)
 
 
-def wip(request):
-    title = _("It's not you...")
-    message = _("The requested ressource is not (yet) available.")
-    context = {
-        'title': title,
-        'message': message}
-    return render(request, 'base/wip.html', context)
+

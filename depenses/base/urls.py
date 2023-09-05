@@ -15,7 +15,7 @@ urlpatterns = [
     path('incomes/', views.wip, name='incomes'),
     path('expenses/', views.expenses, name='expenses'),
     path('expense/<str:pk>', views.expense, name='expense'),
-    path('accounts/', views.accounts_list, name='accounts'),
-    path('account/details', views.account_form, name='account_details'),
+    path('accounts/', views.accounts, name='accounts'),
+    path('account/add', views.account_add, name='account_add'),
     path('categories/', views.wip, name='categories'),
 ]
