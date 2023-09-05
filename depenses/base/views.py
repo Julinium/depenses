@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.utils.translation import gettext_lazy as _
-from base.models import Expense, Income, Transfer, Account
+from base.models import Expense, Income, Transfer, Account, AccountBalance
 from django.contrib.auth.decorators import login_required
 # from django.shortcuts import  render, redirect
 from .forms import NewUserForm, AccountForm
@@ -111,9 +111,13 @@ def account_form(request):
             account.user = request.user
             if account.save():
                 messages.success(request, _("Account created successfully."))
+                accoubal = AccountBalance.objects.create(balance=account.balance)
+                # accoubal.balance = account.balance
+                accoubal.save()
+                print(accoubal)
             else:
-                messages.error(request, _("Account creation error. Invalid information."))
-            return redirect("accounts")
+                messages.error(request, _("Account saving error. Invalid information."))
+        return redirect("accounts")
         messages.error(request, _("Account creation error. Invalid information."))
     else:
         form = AccountForm()
