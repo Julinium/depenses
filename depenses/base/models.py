@@ -56,9 +56,14 @@ class Account(models.Model):
     date_modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name + " = " + str(self.balance) + " (" + str(self.user) + ")"
+        return self.name + " (" + str(self.user) + ")"
 
 
+class AccounBalance(models.Model):
+    account = models.ForeignKey(Account, verbose_name=_("Account"), on_delete=models.CASCADE)
+    balance = models.DecimalField(_("Balance"), max_digits=10, decimal_places=2, default=0)
+    balance_date = models.DateTimeField(_("Balance Date"), default=timezone.now)
+    
 
 class Expense(models.Model):
     class Meta:

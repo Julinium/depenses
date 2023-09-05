@@ -16,5 +16,6 @@ urlpatterns = [
     path('expenses/', views.expenses, name='expenses'),
     path('expense/<str:pk>', views.expense, name='expense'),
     path('accounts/', views.accounts_list, name='accounts'),
+    path('account/details', views.account_form, name='account_details'),
     path('categories/', views.wip, name='categories'),
 ]

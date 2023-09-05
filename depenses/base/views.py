@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from base.models import Expense, Income, Transfer, Account
 from django.contrib.auth.decorators import login_required
 # from django.shortcuts import  render, redirect
-from .forms import NewUserForm
+from .forms import NewUserForm, AccountForm
 from django.contrib import messages
 
 
@@ -100,6 +100,26 @@ def expense(request, pk):
         'title': _("Non authorized"),
         'message': _("You are not authorized to acces the requested ressource.")}
     return render(request, 'base/wip.html', context)
+
+
+@login_required(login_url="login")
+def account_form(request):
+    if request.method == "POST":
+        form = AccountForm(request.POST)
+        if form.is_valid():
+            account = form.save(commit=False)
+            account.user = request.user
+            if account.save():
+                messages.success(request, _("Account created successfully."))
+            else:
+                messages.error(request, _("Account creation error. Invalid information."))
+            return redirect("accounts")
+        messages.error(request, _("Account creation error. Invalid information."))
+    else:
+        form = AccountForm()
+    context={"form": form}
+    return render (request, "base/account_form.html", context)
+
 
 def wip(request):
     title = _("It's not you...")
